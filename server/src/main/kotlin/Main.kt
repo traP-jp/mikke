@@ -20,7 +20,7 @@ fun Application.module() {
     }
     routing {
         route("/api/v1") {
-            get("/") {
+            get("/ping") {
                 call.respond(Message("Hello, world!"))
             }
         }
