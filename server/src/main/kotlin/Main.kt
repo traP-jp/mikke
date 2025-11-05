@@ -19,13 +19,13 @@ fun Application.module() {
         json()
     }
     routing {
-        get("/") {
-            call.respond(Message("Hello, world!"))
+        route("/api/v1") {
+            get("/") {
+                call.respond(Message("Hello, world!"))
+            }
         }
     }
 }
 
 @Serializable
 data class Message(val message: String)
-
-
