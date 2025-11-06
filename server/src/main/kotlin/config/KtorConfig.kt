@@ -37,20 +37,23 @@ fun Application.module() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             when (cause) {
-                is IllegalArgumentException -> call.respond(
-                    HttpStatusCode.BadRequest,
-                    Error(cause.message ?: "Bad request")
-                )
+                is IllegalArgumentException ->
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        Error(cause.message ?: "Bad request"),
+                    )
 
-                is NoSuchElementException -> call.respond(
-                    HttpStatusCode.NotFound,
-                    Error(cause.message ?: "Not found")
-                )
+                is NoSuchElementException ->
+                    call.respond(
+                        HttpStatusCode.NotFound,
+                        Error(cause.message ?: "Not found"),
+                    )
 
-                else -> call.respond(
-                    HttpStatusCode.InternalServerError,
-                    Error(cause.message ?: "Unknown error")
-                )
+                else ->
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        Error(cause.message ?: "Unknown error"),
+                    )
             }
         }
         status(HttpStatusCode.NotFound) { call, status ->
@@ -60,11 +63,13 @@ fun Application.module() {
 
     install(DefaultHeaders)
     install(DropwizardMetrics) {
-        val reporter = Slf4jReporter.forRegistry(registry)
-            .outputTo(this@module.log)
-            .convertRatesTo(TimeUnit.SECONDS)
-            .convertDurationsTo(TimeUnit.MILLISECONDS)
-            .build()
+        val reporter =
+            Slf4jReporter
+                .forRegistry(registry)
+                .outputTo(this@module.log)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build()
         reporter.start(10, TimeUnit.SECONDS)
     }
     install(ContentNegotiation) {

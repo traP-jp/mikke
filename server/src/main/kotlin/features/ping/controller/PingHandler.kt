@@ -8,7 +8,9 @@ import jp.trap.mikke.openapi.models.Pong
 import org.koin.core.annotation.Single
 
 @Single
-class PingHandler(private val pingService: PingService) {
+class PingHandler(
+    private val pingService: PingService,
+) {
     suspend fun handlePing(call: ApplicationCall) {
         val response = pingService.ping()
         call.respond(response.toDto())
