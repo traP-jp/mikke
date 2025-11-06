@@ -15,7 +15,9 @@ servers:
 paths:
   /ping:
     get:
+      security: []
       summary: Ping
+      operationId: ping
       responses:
         "200":
           description: OK
@@ -28,6 +30,7 @@ paths:
   /auth/login:
     post:
       summary: ログイン
+      operationId: login
       description: traQ にログインするためのURLにリダイレクトします。
       responses:
         "302":
@@ -37,6 +40,7 @@ paths:
   /auth/logout:
     post:
       summary: ログアウト
+      operationId: logout
       description: ログアウトします。
       responses:
         "204":
@@ -46,6 +50,7 @@ paths:
   /auth/callback:
     get:
       summary: 認証コールバック
+      operationId: authCallback
       description: traQ からの認証コールバックを受け取ります。
       parameters:
         - name: code
@@ -61,6 +66,7 @@ paths:
   /users/me:
     get:
       summary: 自分のユーザー情報を取得
+      operationId: getMe
       description: 自分のユーザー情報を取得します。
       responses:
         "200":
@@ -76,6 +82,7 @@ paths:
   /users/{userId}:
     get:
       summary: ユーザー情報を取得
+      operationId: getUser
       description: 指定されたユーザーの情報を取得します。
       parameters:
         - $ref: '#/components/parameters/userId'
@@ -93,6 +100,7 @@ paths:
   /users/{userId}/icon:
     get:
       summary: アイコンを取得
+      operationId: getUserIcon
       description: ユーザーのアイコンを取得します。traQのアイコンにリダイレクトします。
       parameters:
         - $ref: '#/components/parameters/userId'
@@ -104,6 +112,7 @@ paths:
   /users/{userId}/posts:
     get:
       summary: 投稿を取得
+      operationId: getUserPosts
       description: 指定されたユーザーの投稿一覧を取得します。
       parameters:
         - $ref: '#/components/parameters/userId'
@@ -123,6 +132,7 @@ paths:
   /posts:
     get:
       summary: タイムラインを取得
+      operationId: getTimeline
       description: タイムラインを取得します。
       responses:
         "200":
@@ -137,6 +147,7 @@ paths:
         - posts
     post:
       summary: 投稿を作成
+      operationId: createPost
       description: 新しい投稿を作成します。
       requestBody:
         required: true
@@ -160,6 +171,7 @@ paths:
   /posts/{postId}:
     get:
       summary: 投稿を取得
+      operationId: getPost
       description: 指定された投稿を取得します。
       parameters:
         - $ref: '#/components/parameters/postId'
@@ -178,6 +190,7 @@ paths:
         - posts
     put:
       summary: 投稿を更新
+      operationId: updatePost
       description: 投稿を更新します。
       parameters:
         - $ref: '#/components/parameters/postId'
@@ -202,6 +215,7 @@ paths:
         - posts
     delete:
       summary: 投稿を削除
+      operationId: deletePost
       description: 投稿を削除します。
       parameters:
         - $ref: '#/components/parameters/postId'
@@ -219,6 +233,7 @@ paths:
   /posts/{postId}/guess:
     post:
       summary: ミッケ！
+      operationId: guess
       description: 投稿の場所をミッケ！します。
       parameters:
         - $ref: '#/components/parameters/postId'
@@ -246,6 +261,7 @@ paths:
   /files:
     post:
       summary: ファイルをアップロード
+      operationId: uploadFile
       description: ファイルをアップロードします。
       requestBody:
         required: true
@@ -263,7 +279,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/File'
+                $ref: '#/components/schemas/FileInfo'
         "400":
           $ref: '#/components/responses/BadRequest'
         "401":
@@ -273,6 +289,7 @@ paths:
   /files/{fileId}:
     get:
       summary: ファイルを取得
+      operationId: getFile
       description: ファイルを取得します。
       parameters:
         - $ref: '#/components/parameters/fileId'
@@ -288,6 +305,7 @@ paths:
   /leaderboards/users:
     get:
       summary: ユーザーのランキングを取得
+      operationId: getUsersLeaderboard
       description: ユーザーのランキングを取得します。
       responses:
         "200":
@@ -303,6 +321,7 @@ paths:
   /leaderboards/posts:
     get:
       summary: 投稿のランキングを取得
+      operationId: getPostsLeaderboard
       description: 投稿のランキングを取得します。
       responses:
         "200":
@@ -420,7 +439,7 @@ components:
         - latitude
         - longitude
 
-    File:
+    FileInfo:
       type: object
       description: ファイルメタデータ
       properties:
