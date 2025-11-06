@@ -3,6 +3,7 @@ info:
   title: Mikke API
   version: "1.0.0"
   description: ミッケ！
+
 servers:
   - url: https://mikke.trap.show/api/v1
     description: production
@@ -10,25 +11,724 @@ servers:
     description: development
   - url: http://localhost:8080/api/v1
     description: local
+
 paths:
   /ping:
     get:
+      security: []
       summary: Ping
+      operationId: ping
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Message'
+                $ref: '#/components/schemas/Pong'
+      tags:
+        - ping
+  /auth/login:
+    post:
+      summary: ログイン
+      operationId: login
+      description: traQ にログインするためのURLにリダイレクトします。
+      responses:
+        "302":
+          description: Found
+      tags:
+        - auth
+  /auth/logout:
+    post:
+      summary: ログアウト
+      operationId: logout
+      description: ログアウトします。
+      responses:
+        "204":
+          description: No Content
+      tags:
+        - auth
+  /auth/callback:
+    get:
+      summary: 認証コールバック
+      operationId: authCallback
+      description: traQ からの認証コールバックを受け取ります。
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Found
+      tags:
+        - auth
+  /users/me:
+    get:
+      summary: 自分のユーザー情報を取得
+      operationId: getMe
+      description: 自分のユーザー情報を取得します。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+        - users
+  /users/{userId}:
+    get:
+      summary: ユーザー情報を取得
+      operationId: getUser
+      description: 指定されたユーザーの情報を取得します。
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - users
+  /users/{userId}/icon:
+    get:
+      summary: アイコンを取得
+      operationId: getUserIcon
+      description: ユーザーのアイコンを取得します。traQのアイコンにリダイレクトします。
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        "302":
+          description: Found
+      tags:
+        - users
+  /users/{userId}/posts:
+    get:
+      summary: 投稿を取得
+      operationId: getUserPosts
+      description: 指定されたユーザーの投稿一覧を取得します。
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - users
+  /posts:
+    get:
+      summary: タイムラインを取得
+      operationId: getTimeline
+      description: タイムラインを取得します。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+      tags:
+        - posts
+    post:
+      summary: 投稿を作成
+      operationId: createPost
+      description: 新しい投稿を作成します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPost'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+        - posts
+  /posts/{postId}:
+    get:
+      summary: 投稿を取得
+      operationId: getPost
+      description: 指定された投稿を取得します。
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - posts
+    put:
+      summary: 投稿を更新
+      operationId: updatePost
+      description: 投稿を更新します。
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePost'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - posts
+    delete:
+      summary: 投稿を削除
+      operationId: deletePost
+      description: 投稿を削除します。
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - posts
+  /posts/{postId}/guess:
+    post:
+      summary: ミッケ！
+      operationId: guess
+      description: 投稿の場所をミッケ！します。
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuessRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuessResponse'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - posts
+  /files:
+    post:
+      summary: ファイルをアップロード
+      operationId: uploadFile
+      description: ファイルをアップロードします。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+        - files
+  /files/{fileId}:
+    get:
+      summary: ファイルを取得
+      operationId: getFile
+      description: ファイルを取得します。
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        "200":
+          description: OK
+          content:
+            image/*: { }
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - files
+  /leaderboards/users:
+    get:
+      summary: ユーザーのランキングを取得
+      operationId: getUsersLeaderboard
+      description: ユーザーのランキングを取得します。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardUserEntry'
+      tags:
+        - leaderboards
+  /leaderboards/posts:
+    get:
+      summary: 投稿のランキングを取得
+      operationId: getPostsLeaderboard
+      description: 投稿のランキングを取得します。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardPostEntry'
+      tags:
+        - leaderboards
+
 components:
   schemas:
-    Message:
+    Pong:
       type: object
+      description: Ping レスポンス (サンプル)
       properties:
         message:
           type: string
+          description: 応答メッセージ
+          example: 'pong!'
       required:
         - message
-      example:
-        message: "Hello, world!"
+
+    User:
+      type: object
+      description: ユーザー
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: traQ ユーザー UUID
+          example: '019a580e-4b63-7d45-96bb-457be8394f89'
+        name:
+          type: string
+          description: traQ ID
+          example: 'howard127'
+      required:
+        - id
+        - name
+
+    Post:
+      type: object
+      description: 投稿
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 投稿ID
+          example: '019a580e-fa5c-7252-86d6-591a7e3eaf60'
+        authorId:
+          $ref: '#/components/schemas/User'
+        publicMessage:
+          type: string
+          description: 公開メッセージ
+          example: 'ここどこだー？'
+        privateMessage:
+          type: string
+          description: 非公開メッセージ
+          example: '富士山でっけ～w'
+        fileId:
+          type: string
+          format: uuid
+          description: 添付された画像ファイルのID
+          example: '019a5810-6477-7982-b966-53f0273847a0'
+        location:
+          $ref: '#/components/schemas/Location'
+        guessCount:
+          type: integer
+          description: ミッケ！された回数
+          example: 5
+        createdAt:
+          type: string
+          format: date-time
+          description: 投稿日時
+          example: '2024-01-01T12:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2024-01-02T12:00:00Z'
+        deletedAt:
+          type: string
+          format: date-time
+          description: 削除日時 (削除されていない場合は null)
+          example: null
+      required:
+        - id
+        - authorId
+        - publicMessage
+        - privateMessage
+        - fileId
+        - location
+        - guessCount
+        - createdAt
+        - updatedAt
+
+    Location:
+      type: object
+      description: 位置情報 (緯度・経度)
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: 緯度
+          example: 35.681236
+        longitude:
+          type: number
+          format: double
+          description: 経度
+          example: 139.767125
+      required:
+        - latitude
+        - longitude
+
+    FileInfo:
+      type: object
+      description: ファイルメタデータ
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ファイルID
+          example: '019a5810-6477-7982-b966-53f0273847a0'
+        mimeType:
+          type: string
+          description: MIMEタイプ
+          example: 'image/jpeg'
+        size:
+          type: integer
+          format: int64
+          description: ファイルサイズ (バイト)
+          example: 204800
+        md5:
+          type: string
+          description: MD5ハッシュ
+          example: '1B2M2Y8AsgTpgAmY7PhCfg=='
+        createdAt:
+          type: string
+          format: date-time
+          description: アップロード日時
+          example: '2024-01-01T12:00:00Z'
+        uploaderId:
+          type: string
+          format: uuid
+          description: アップロードしたユーザーのUUID
+          example: '019a580e-4b63-7d45-96bb-457be8394f89'
+      required:
+        - id
+        - mimeType
+        - size
+        - md5
+        - createdAt
+        - uploaderId
+
+    UserStats:
+      type: object
+      description: ユーザー統計情報
+      properties:
+        postsCount:
+          type: integer
+          description: 投稿数
+          example: 10
+        guessedCount:
+          type: integer
+          description: ミッケ！した数 (自分が当てた数)
+          example: 20
+        beenGuessedCount:
+          type: integer
+          description: ミッケ！された数 (自分の投稿が当てられた総数)
+          example: 50
+        guesserScore:
+          type: integer
+          description: ミッケ！スコア
+          example: 185
+        posterScore:
+          type: integer
+          description: 投稿スコア
+          example: 205
+      required:
+        - postsCount
+        - guessedCount
+        - beenGuessedCount
+        - guesserScore
+        - posterScore
+
+    LeaderboardUserEntry:
+      type: object
+      description: ユーザーランキングのエントリ
+      properties:
+        rank:
+          type: integer
+          description: 順位
+          example: 1
+        user:
+          $ref: '#/components/schemas/User'
+        score:
+          type: integer
+          description: 得点
+          example: 100
+      required:
+        - rank
+        - user
+        - score
+
+    LeaderboardPostEntry:
+      type: object
+      description: 投稿ランキングのエントリ
+      properties:
+        rank:
+          type: integer
+          description: 順位
+          example: 1
+        post:
+          $ref: '#/components/schemas/Post'
+        score:
+          type: integer
+          description: 得点
+          example: 50
+      required:
+        - rank
+        - post
+        - score
+
+    Error:
+      type: object
+      description: エラーレスポンス
+      properties:
+        message:
+          type: string
+          description: エラーメッセージ
+          example: 'Not Found'
+      required:
+        - message
+
+    NewPost:
+      type: object
+      description: 新規投稿リクエスト
+      properties:
+        publicMessage:
+          type: string
+          description: 投稿メッセージ
+          example: 'ここはどこでしょう？'
+        privateMessage:
+          type: string
+          description: 非公開メッセージ
+          example: '暇人かよ。'
+        fileId:
+          type: string
+          format: uuid
+          description: アップロード済みのファイルID (POST /files で取得)
+          example: '019a581e-2b1e-797b-b732-e69287683601'
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - fileId
+        - location
+
+    UpdatePost:
+      type: object
+      description: 投稿更新リクエスト
+      properties:
+        publicMessage:
+          type: string
+          description: 新しい投稿メッセージ
+          example: '[REDACTED]'
+        privateMessage:
+          type: string
+          description: 新しい非公開メッセージ
+          example: '暇人かよ。2'
+
+    GuessRequest:
+      type: object
+      description: ミッケ！リクエスト
+      properties:
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - location
+
+    GuessResponse:
+      type: object
+      description: ミッケ！レスポンス
+      properties:
+        correct:
+          type: boolean
+          description: 正解かどうか
+          example: true
+        distance:
+          type: number
+          format: double
+          description: 実際の場所からの距離 (メートル)
+          example: 50.5
+      required:
+        - correct
+        - distance
+
+    UserDetail:
+      type: object
+      description: ユーザー詳細情報 (統計情報を含む)
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: traQ ユーザー UUID
+          example: '019a5828-b02b-76b5-b9e5-1ba2bcc23b5c'
+        name:
+          type: string
+          description: traQ ユーザー名
+          example: 'howard127'
+        stats:
+          $ref: '#/components/schemas/UserStats'
+      required:
+        - id
+        - name
+        - stats
+
+  securitySchemes:
+    traQAuth:
+      type: oauth2
+      description: traQ を利用した OAuth2 認証
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://q.trap.jp/api/v3/oauth2/authorize'
+          tokenUrl: 'https://q.trap.jp/api/v3/oauth2/token'
+          scopes:
+            openid: 'ユーザーID取得'
+            profile: 'プロフィール取得'
+            read: '読み取り'
+            write: '書き込み'
+
+  parameters:
+    userId:
+      name: user-uuid
+      in: path
+      required: true
+      description: traQ ユーザー UUID
+      schema:
+        type: string
+        format: uuid
+        example: '019a582d-c4f7-7d2c-aff0-b1ce73bd9288'
+    postId:
+      name: post-uuid
+      in: path
+      required: true
+      description: 投稿ID
+      schema:
+        type: string
+        format: uuid
+        example: '019a582d-d8a9-7226-ad36-530f9d9cdbbc'
+    fileId:
+      name: file-uuid
+      in: path
+      required: true
+      description: ファイルID
+      schema:
+        type: string
+        format: uuid
+        example: '019a582e-0665-7be9-9147-8401b29c532a'
+
+  responses:
+    Unauthorized:
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: 権限エラー
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: リソースが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: リクエストが不正です
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: サーバー内部エラー
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: ping
+    description: テスト用
+  - name: auth
+    description: 認証 API
+  - name: users
+    description: ユーザー API
+  - name: posts
+    description: 投稿 API
+  - name: files
+    description: ファイル API
+  - name: leaderboards
+    description: ランキング API
+
+security:
+  - traQAuth: [ ]

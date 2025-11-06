@@ -1,11 +1,15 @@
 FROM eclipse-temurin:24-jdk-noble AS build
 WORKDIR /app
-COPY . .
+
+COPY server ./server
+COPY openapi ./openapi
+
+WORKDIR /app/server
 RUN chmod +x gradlew
 RUN ./gradlew build --no-daemon
 
 FROM eclipse-temurin:24-jre-noble
 WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/server/build/libs/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

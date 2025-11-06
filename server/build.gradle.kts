@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktor)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.openapi.generator)
     application
 }
 
@@ -19,10 +20,19 @@ repositories {
 
 dependencies {
     // Ktor
+    implementation(libs.ktor.client.apache)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.resources)
+    implementation(libs.ktor.server.swagger)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auto.head.response)
+    implementation(libs.ktor.server.default.headers)
+    implementation(libs.ktor.server.hsts)
+    implementation(libs.ktor.server.compression)
+    implementation(libs.ktor.server.metrics)
     implementation(libs.ktor.serialization.kotlinx.json)
 
     // Koin
@@ -54,6 +64,57 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit5)
+
+    //Utils
+    implementation(libs.uuid.creator)
+}
+
+val specFile = rootProject.file("../openapi/openapi.yaml")
+val generatedOpenApiDir = layout.buildDirectory.dir("generated/openapi")
+
+openApiGenerate {
+    generatorName.set("kotlin-server")
+    library.set("ktor")
+    configOptions.set(
+        mapOf(
+            "serializationLibrary" to "kotlinx-serialization",
+            "serializableModel" to "true",
+            "enumPropertyNaming" to "UPPERCASE",
+        )
+    )
+
+    inputSpec.set(specFile.toURI().toString())
+
+    outputDir.set(generatedOpenApiDir.map { it.asFile.absolutePath })
+
+    typeMappings.set(
+        mapOf(
+            "UUID" to "kotlin.uuid.Uuid",
+            "uuid" to "kotlin.uuid.Uuid",
+            "string+date-time" to "kotlin.time.Instant"
+        )
+    )
+
+    packageName.set("jp.trap.mikke.openapi")
+}
+
+sourceSets.main {
+    kotlin.srcDir(generatedOpenApiDir.map { it.dir("src/main/kotlin") })
+    resources {
+        srcDir(specFile.parentFile)
+    }
+}
+
+tasks.build {
+    dependsOn(tasks.openApiGenerate)
+}
+
+tasks.compileKotlin {
+    dependsOn(tasks.openApiGenerate)
+}
+
+tasks.matching { it.name == "kspKotlin" }.configureEach {
+    dependsOn(tasks.openApiGenerate)
 }
 
 tasks.test {
@@ -61,5 +122,9 @@ tasks.test {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
+        freeCompilerArgs.add("-opt-in=kotlin.uuid.ExperimentalUuidApi")
+    }
     jvmToolchain(24)
 }
