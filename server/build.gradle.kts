@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ktor)
     alias(libs.plugins.ksp)
     alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.ktlint)
     application
 }
 
@@ -65,7 +66,7 @@ dependencies {
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit5)
 
-    //Utils
+    // Utils
     implementation(libs.uuid.creator)
 }
 
@@ -80,7 +81,7 @@ openApiGenerate {
             "serializationLibrary" to "kotlinx-serialization",
             "serializableModel" to "true",
             "enumPropertyNaming" to "UPPERCASE",
-        )
+        ),
     )
 
     inputSpec.set(specFile.toURI().toString())
@@ -91,8 +92,8 @@ openApiGenerate {
         mapOf(
             "UUID" to "kotlin.uuid.Uuid",
             "uuid" to "kotlin.uuid.Uuid",
-            "string+date-time" to "kotlin.time.Instant"
-        )
+            "string+date-time" to "kotlin.time.Instant",
+        ),
     )
 
     packageName.set("jp.trap.mikke.openapi")
@@ -127,4 +128,10 @@ kotlin {
         freeCompilerArgs.add("-opt-in=kotlin.uuid.ExperimentalUuidApi")
     }
     jvmToolchain(24)
+}
+
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    filter {
+        exclude { it.file.path.contains("generated") }
+    }
 }

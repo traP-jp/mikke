@@ -5,7 +5,5 @@ import org.koin.core.annotation.Single
 
 @Single
 class PingService {
-    fun ping(): PingResult {
-        return PingResult("pong!")
-    }
+    fun ping(): PingResult = PingResult("pong!")
 }
