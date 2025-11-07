@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 import java.net.URI
 import java.nio.file.Files
@@ -10,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.openapi.generator)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.shadow)
     application
 }
 
@@ -173,6 +175,7 @@ sourceSets.main {
 tasks.build {
     dependsOn(tasks.openApiGenerate)
     dependsOn(tasks.named("generateTraqClient"))
+    dependsOn(tasks.shadowJar)
 }
 
 tasks.compileKotlin {
@@ -187,6 +190,11 @@ tasks.matching { it.name == "kspKotlin" }.configureEach {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<ShadowJar> {
+    mergeServiceFiles()
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 kotlin {
