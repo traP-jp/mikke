@@ -31,7 +31,7 @@ paths:
     get:
       summary: ログイン
       operationId: login
-      description: traQ にログインするためのURLにリダイレクトします。
+      description: /authorize にリダイレクトします。
       security: [ ]
       parameters:
         - name: redirect_to
@@ -44,12 +44,23 @@ paths:
           description: Found
       tags:
         - auth
+  /auth/authorize:
+    get:
+      summary: traQ 認可
+      operationId: authorize
+      description: traQ の認可ページにリダイレクトします。
+      security:
+        - traQAuth: [ openid, profile, read, write ]
+      responses:
+        "302":
+          description: Found
+      tags:
+        - auth
   /auth/logout:
     post:
       summary: ログアウト
       operationId: logout
       description: ログアウトします。
-      security: [ ]
       responses:
         "204":
           description: No Content
@@ -60,7 +71,8 @@ paths:
       summary: 認証コールバック
       operationId: authCallback
       description: traQ からの認証コールバックを受け取ります。
-      security: [ ]
+      security:
+        - traQAuth: [ openid, profile, read, write ]
       parameters:
         - name: code
           in: query
