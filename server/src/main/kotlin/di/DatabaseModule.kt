@@ -30,6 +30,7 @@ object DatabaseModule {
                 .load()
                 .migrate()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw RuntimeException("Failed to migrate database", e)
         }
 
