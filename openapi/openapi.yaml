@@ -32,6 +32,7 @@ paths:
       summary: ログイン
       operationId: login
       description: traQ にログインするためのURLにリダイレクトします。
+      security: []
       responses:
         "302":
           description: Found
@@ -42,6 +43,7 @@ paths:
       summary: ログアウト
       operationId: logout
       description: ログアウトします。
+      security: []
       responses:
         "204":
           description: No Content
@@ -52,6 +54,7 @@ paths:
       summary: 認証コールバック
       operationId: authCallback
       description: traQ からの認証コールバックを受け取ります。
+      security: []
       parameters:
         - name: code
           in: query
@@ -655,6 +658,12 @@ components:
             read: '読み取り'
             write: '書き込み'
 
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      description: セッション認証 (cookie)
+      name: sid
+
   parameters:
     userId:
       name: user-uuid
@@ -731,4 +740,4 @@ tags:
     description: ランキング API
 
 security:
-  - traQAuth: [ ]
+  - cookieAuth: [ ]
