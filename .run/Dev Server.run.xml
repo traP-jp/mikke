@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Dev Server" type="KtorApplicationConfigurationType" factoryName="Ktor">
+    <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/server/.env" />
+    </option>
     <option name="MAIN_CLASS_NAME" value="jp.trap.mikke.MainKt" />
     <module name="jp.trap.Mikke.main" />
     <option name="alternativeJrePath" />

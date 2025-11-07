@@ -65,7 +65,8 @@ dependencies {
 
     // Database
     implementation(libs.hikaricp)
-    implementation(libs.flyway)
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.mysql)
     runtimeOnly(libs.mariadb)
 
     // Test
