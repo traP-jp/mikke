@@ -15,7 +15,7 @@ servers:
 paths:
   /ping:
     get:
-      security: []
+      security: [ ]
       summary: Ping
       operationId: ping
       responses:
@@ -28,11 +28,17 @@ paths:
       tags:
         - ping
   /auth/login:
-    post:
+    get:
       summary: ログイン
       operationId: login
       description: traQ にログインするためのURLにリダイレクトします。
-      security: []
+      security: [ ]
+      parameters:
+        - name: redirect_to
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         "302":
           description: Found
@@ -43,7 +49,7 @@ paths:
       summary: ログアウト
       operationId: logout
       description: ログアウトします。
-      security: []
+      security: [ ]
       responses:
         "204":
           description: No Content
@@ -54,7 +60,7 @@ paths:
       summary: 認証コールバック
       operationId: authCallback
       description: traQ からの認証コールバックを受け取ります。
-      security: []
+      security: [ ]
       parameters:
         - name: code
           in: query
