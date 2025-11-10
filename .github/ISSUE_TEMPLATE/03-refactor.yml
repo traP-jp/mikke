@@ -1,7 +1,7 @@
 name: "Refactoring"
 description: "ユーザーから見える動作は変えずに、コードの品質を向上させるための提案"
 title: "[Refactor] "
-labels: ["type: refactoring", "need: triage"]
+labels: ["type/refactoring", "need/triage"]
 body:
   - type: textarea
     id: overview
