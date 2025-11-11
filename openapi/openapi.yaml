@@ -726,7 +726,7 @@ components:
 
   parameters:
     userId:
-      name: user-id
+      name: userId
       in: path
       required: true
       description: traQ ユーザー UUID
@@ -735,7 +735,7 @@ components:
         format: uuid
         example: '019a582d-c4f7-7d2c-aff0-b1ce73bd9288'
     postId:
-      name: post-id
+      name: postId
       in: path
       required: true
       description: 投稿ID
@@ -744,7 +744,7 @@ components:
         format: uuid
         example: '019a582d-d8a9-7226-ad36-530f9d9cdbbc'
     fileId:
-      name: file-id
+      name: fileId
       in: path
       required: true
       description: ファイルID
