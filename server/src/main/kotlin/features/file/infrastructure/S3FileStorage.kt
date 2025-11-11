@@ -68,7 +68,10 @@ class S3FileStorage : FileStorage {
         )
     }
 
-    override suspend fun readFile(fileId: FileId): InputStream? {
+    override suspend fun <R> useFile(
+        fileId: FileId,
+        block: suspend (stream: InputStream?) -> R,
+    ): R {
         val getObjectRequest =
             GetObjectRequest {
                 bucket = bucketName
@@ -77,9 +80,10 @@ class S3FileStorage : FileStorage {
 
         return useClient { client ->
             client.getObject(getObjectRequest) { response ->
-                response.body?.let { body ->
-                    withContext(Dispatchers.IO) {
-                        body.toInputStream()
+                val body = response.body ?: return@getObject block(null)
+                withContext(Dispatchers.IO) {
+                    body.toInputStream().use { inputStream ->
+                        block(inputStream)
                     }
                 }
             }

@@ -73,12 +73,6 @@ class FileHandler(
         val fileIdParam = call.parameters["fileId"] ?: throw IllegalArgumentException("fileId is required")
         val id = FileId(Uuid.parse(fileIdParam))
 
-        val body =
-            fileService.getFileBody(id) ?: run {
-                call.respond(HttpStatusCode.NotFound, Error("File not found"))
-                return
-            }
-
         val info =
             fileService.getFileInfo(id) ?: run {
                 call.respond(HttpStatusCode.NotFound, Error("File info not found"))
@@ -94,13 +88,20 @@ class FileHandler(
                 ).toString(),
         )
 
-        call.respondBytesWriter(
-            contentType = ContentType.parse(info.mimeType),
-            status = HttpStatusCode.OK,
-            contentLength = info.size,
-        ) {
-            body.use { inputStream ->
-                inputStream.copyTo(this.toOutputStream())
+        fileService.useFileBody(id) { body ->
+            body ?: run {
+                call.respond(HttpStatusCode.NotFound, Error("File not found"))
+                return@useFileBody
+            }
+
+            call.respondBytesWriter(
+                contentType = ContentType.parse(info.mimeType),
+                status = HttpStatusCode.OK,
+                contentLength = info.size,
+            ) {
+                body.use { inputStream ->
+                    inputStream.copyTo(this.toOutputStream())
+                }
             }
         }
     }

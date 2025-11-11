@@ -36,7 +36,10 @@ class FileService(
         return info
     }
 
-    suspend fun getFileBody(id: FileId): InputStream? = fileStorage.readFile(id)
+    suspend fun <R> useFileBody(
+        id: FileId,
+        block: suspend (InputStream?) -> R,
+    ): R = fileStorage.useFile(id, block)
 
     suspend fun getFileInfo(id: FileId): FileInfo? = fileInfoRepository.find(id)
 

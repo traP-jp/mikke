@@ -19,7 +19,10 @@ interface FileStorage {
         data: InputStream,
     ): FileInfo
 
-    suspend fun readFile(fileId: FileId): InputStream?
+    suspend fun <R> useFile(
+        fileId: FileId,
+        block: suspend (stream: InputStream?) -> R,
+    ): R
 
     suspend fun deleteFile(fileId: FileId)
 }
