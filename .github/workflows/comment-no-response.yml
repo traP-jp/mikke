@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   comment-no-response:
-    if: github.repository == 'mikannkann/iroiro-test'
+    if: github.repository == 'traP-jp/mikke'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
