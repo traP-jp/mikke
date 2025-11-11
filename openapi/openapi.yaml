@@ -331,6 +331,41 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - files
+    delete:
+      summary: ファイルを削除
+      operationId: deleteFile
+      description: ファイルを削除します。
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - files
+  /files/{fileId}/meta:
+    get:
+      summary: ファイルメタデータを取得
+      operationId: getFileMetadata
+      description: ファイルのメタデータを取得します。
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - files
   /leaderboards/users:
     get:
       summary: ユーザーのランキングを取得
@@ -486,10 +521,6 @@ components:
           format: int64
           description: ファイルサイズ (バイト)
           example: 204800
-        md5:
-          type: string
-          description: MD5ハッシュ
-          example: '1B2M2Y8AsgTpgAmY7PhCfg=='
         createdAt:
           type: string
           format: date-time
@@ -504,7 +535,6 @@ components:
         - id
         - mimeType
         - size
-        - md5
         - createdAt
         - uploaderId
 
