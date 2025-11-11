@@ -116,9 +116,13 @@ class FileHandler(
                 ?: throw IllegalArgumentException("fileId is required")
         val id = FileId(Uuid.parse(fileIdParam))
 
-        val info = fileService.getFileInfo(id)
+        val info =
+            fileService.getFileInfo(id) ?: run {
+                call.respond(HttpStatusCode.NotFound, Error("File not found"))
+                return
+            }
 
-        if (info?.uploaderId != userId) {
+        if (info.uploaderId != userId) {
             call.respond(HttpStatusCode.Forbidden, Error("You do not have permission to delete this file"))
             return
         }
