@@ -64,4 +64,21 @@ npm run dev
 
 サーバーは Kotlin + Gradle（Ktor, Koin, Exposed など）で構築されています
 
-<!-- TODO: サーバーの環境構築 -->
+開発には Intellij IDEA を使用します
+
+Intellij IDEA の起動構成から各種操作ができます
+
+#### Dev Server
+ - 開発サーバーの起動
+
+#### Dev Database
+ - 開発用データベースの起動 (Dockerが必要です)
+
+#### Build
+ - サーバーのJarファイルをビルド
+
+#### Format
+ - ソースコードの自動整形
+
+#### Generate Code
+ - openapi-generatorやkoinによるソースコードの生成
