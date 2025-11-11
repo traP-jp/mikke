@@ -13,7 +13,7 @@
     <option name="programParameters" value="" />
     <option name="shortenCommandLine" />
     <option name="vmParameters" />
-    <option name="workingDirectory" value="C:\Users\howar\Desktop\projects\Mikke" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
