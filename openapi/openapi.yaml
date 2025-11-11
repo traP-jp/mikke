@@ -512,6 +512,10 @@ components:
           format: uuid
           description: ファイルID
           example: '019a5810-6477-7982-b966-53f0273847a0'
+        name:
+          type: string
+          description: 元のファイル名
+          example: 'photo.jpg'
         mimeType:
           type: string
           description: MIMEタイプ
@@ -722,7 +726,7 @@ components:
 
   parameters:
     userId:
-      name: user-uuid
+      name: user-id
       in: path
       required: true
       description: traQ ユーザー UUID
@@ -731,7 +735,7 @@ components:
         format: uuid
         example: '019a582d-c4f7-7d2c-aff0-b1ce73bd9288'
     postId:
-      name: post-uuid
+      name: post-id
       in: path
       required: true
       description: 投稿ID
@@ -740,7 +744,7 @@ components:
         format: uuid
         example: '019a582d-d8a9-7226-ad36-530f9d9cdbbc'
     fileId:
-      name: file-uuid
+      name: file-id
       in: path
       required: true
       description: ファイルID

@@ -29,6 +29,7 @@ import jp.trap.mikke.features.auth.infrastructure.DatabaseSessionStorage
 import jp.trap.mikke.features.auth.infrastructure.UserSessionTable
 import jp.trap.mikke.features.auth.session.RedirectSession
 import jp.trap.mikke.features.auth.session.UserSession
+import jp.trap.mikke.features.file.controller.fileRoutes
 import jp.trap.mikke.features.ping.controller.pingRoutes
 import jp.trap.mikke.features.websocket.controller.webSocketRoutes
 import jp.trap.mikke.openapi.ApplicationCompressionConfiguration
@@ -151,6 +152,7 @@ fun Application.configureRouting() {
         route("/api/v1") {
             pingRoutes()
             authRoutes()
+            fileRoutes()
             webSocketRoutes()
             swaggerUI(path = "docs", swaggerFile = "openapi.yaml")
         }

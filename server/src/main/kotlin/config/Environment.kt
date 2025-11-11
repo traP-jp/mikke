@@ -17,4 +17,7 @@ object Environment {
     val DB_URL = System.getenv("DB_URL") ?: "jdbc:mariadb://localhost:3306/mikke"
     val DB_USER = System.getenv("DB_USER") ?: "mikke"
     val DB_PASS = System.getenv("DB_PASS") ?: "mikke_dev"
+
+    val S3_BUCKET_NAME: String = System.getenv("S3_BUCKET_NAME") ?: ""
+    val S3_ENDPOINT_URL: String = System.getenv("S3_ENDPOINT_URL") ?: ""
 }

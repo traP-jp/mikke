@@ -27,6 +27,8 @@ repositories {
 }
 
 dependencies {
+    implementation(platform(awssdk.bom))
+
     // Ktor
     implementation(libs.ktor.client.apache)
     implementation(libs.ktor.client.content.negotiation)
@@ -56,6 +58,7 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.dao)
+    implementation(libs.exposed.kotlin.datetime)
 
     // Kotlinx
     implementation(libs.kotlinx.coroutines.core)
@@ -79,6 +82,9 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit5)
+
+    // AWS SDK
+    implementation(awssdk.services.s3)
 
     // Utils
     implementation(libs.uuid.creator)

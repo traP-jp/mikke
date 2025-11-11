@@ -10,6 +10,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
 
 class DatabaseSessionStorage(
     private val table: SessionTable,
@@ -26,7 +27,7 @@ class DatabaseSessionStorage(
     override suspend fun read(id: String): String =
         withContext(Dispatchers.IO) {
             transaction {
-                val now = Clock.System.now().epochSeconds
+                val now = Clock.System.now()
 
                 val result =
                     table.selectAll().where { table.sessionId eq id }.singleOrNull()
@@ -48,8 +49,8 @@ class DatabaseSessionStorage(
     ) {
         withContext(Dispatchers.IO) {
             transaction {
-                val now = Clock.System.now().epochSeconds
-                val expireTime = now + maxAgeInSeconds
+                val now = Clock.System.now()
+                val expireTime = now + maxAgeInSeconds.seconds
 
                 val updatedRows =
                     table.update({ table.sessionId eq id }) {
