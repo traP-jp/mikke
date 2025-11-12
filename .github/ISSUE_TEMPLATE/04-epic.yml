@@ -1,0 +1,41 @@
+name: "Epic"
+description: "複数の関連するIssueをまとめるもの"
+title: "[Epic] "
+labels: ["type/epic", "need/triage"]
+
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: "Overview"
+      description: "目的や期待する成果をまとめた、簡潔な概要"
+      placeholder: |
+        ex. ユーザーが新しいダッシュボード機能を使えるようにする
+
+  - type: textarea
+    id: related-issues
+    attributes:
+      label: "Related Issues"
+      description: "このEpicを達成するために必要なIssueやタスクをリストアップ"
+      placeholder: |
+        - #125 APIの設計
+        - #126 データベースのマイグレーション
+        - #123 ダッシュボードのUI実装
+        - #124 API連携と表示ロジック実装
+
+  - type: textarea
+    id: details
+    attributes:
+      label: "Details"
+      description: "その他補足情報"
+      placeholder: |
+        データ取得コストが増える可能性があるため注意が必要
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "References"
+      description: "参考情報や、関連情報等あれば"
+      placeholder: |
+        - [Figmaデザイン](http://example.com)
+        - [要件定義書](http://example.com)
