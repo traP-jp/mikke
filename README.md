@@ -69,16 +69,21 @@ npm run dev
 Intellij IDEA の起動構成から各種操作ができます
 
 #### Dev Server
- - 開発サーバーの起動
+
+- 開発サーバーの起動
 
 #### Dev Database
- - 開発用データベースの起動 (Dockerが必要です)
+
+- 開発用データベースの起動 (Docker が必要です)
 
 #### Build
- - サーバーのJarファイルをビルド
+
+- サーバーの Jar ファイルをビルド
 
 #### Format
- - ソースコードの自動整形
+
+- ソースコードの自動整形
 
 #### Generate Code
- - openapi-generatorやkoinによるソースコードの生成
+
+- openapi-generator や koin によるソースコードの生成
